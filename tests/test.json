@@ -1,0 +1,96 @@
+[
+  {
+    "name": "Verify a current claim with primary and backup web research",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "Gemini primary provider",
+      "Groq GPT-OSS 20B fallback",
+      "web search grounding",
+      "source URL validation",
+      "VERIFIED/BLOCKED/NEEDS_REVIEW classification",
+      "clickable citations",
+      "verification persistence"
+    ],
+    "description": "Submits a factual claim and verifies that Gemini is preferred, Groq browser search is used if Gemini fails or lacks grounding, and only source-cited results are saved.",
+    "steps": [
+      "Open Verify Claim and submit 'The Eiffel Tower is in Paris, France.'",
+      "Wait for Gemini or the Groq backup to research the claim.",
+      "Inspect the provider label and open at least one displayed source link."
+    ],
+    "expected": "A source-cited result is shown with the provider that completed it. If neither provider returns usable web sources, no verdict is saved and a clear error is shown."
+  },
+  {
+    "name": "Add, list and delete saved evidence",
+    "viewport": "desktop",
+    "covers": [
+      "evidence creation",
+      "evidence listing",
+      "evidence deletion",
+      "delete confirmation",
+      "deletion feedback",
+      "atomic evidence deletion and audit event",
+      "persistence after refresh"
+    ],
+    "description": "Checks that evidence can be added and listed, then explicitly confirmed for deletion and remains absent after refresh.",
+    "steps": [
+      "Open Evidence Library and add a uniquely named QA evidence record.",
+      "Confirm the new record appears in Stored evidence, click Delete, then click Confirm delete.",
+      "Refresh the library and verify that the QA record is absent and the audit event is present."
+    ],
+    "expected": "The QA record disappears after confirmed deletion and remains absent after refresh; exactly one corresponding deletion audit event is recorded."
+  },
+  {
+    "name": "Human review and audit history remain available",
+    "viewport": "desktop",
+    "covers": [
+      "human review",
+      "review reason validation",
+      "audit history persistence",
+      "original AI result preservation"
+    ],
+    "description": "Records a reviewer decision with a reason and checks that the event appears in the audit trail without replacing the original automated assessment.",
+    "steps": [
+      "Open a verification result and send it to human review.",
+      "Submit a decision and a reason in the review queue.",
+      "Open Audit Trail and inspect the review event."
+    ],
+    "expected": "The review decision and reason are recorded without overwriting the original automated result."
+  },
+  {
+    "name": "Keep unsupported or conflicting web claims under review on mobile",
+    "viewport": "mobile",
+    "covers": [
+      "no-source guardrail",
+      "conflicting-source handling",
+      "mobile claim verification",
+      "responsive layout"
+    ],
+    "description": "Checks that insufficient public evidence does not produce an unsupported verdict and that claim verification remains usable on a small screen.",
+    "steps": [
+      "At mobile viewport, submit a highly specific claim unlikely to have reliable public coverage.",
+      "Inspect the returned status and source list.",
+      "Confirm the form and result remain usable without horizontal overflow."
+    ],
+    "expected": "When reliable sources are missing or conflict, the result is NEEDS_REVIEW; mobile form and result content remain usable."
+  },
+  {
+    "name": "Provide safe provider failure handling and honest demo results",
+    "viewport": "desktop",
+    "covers": [
+      "Gemini quota exhaustion handling",
+      "Groq provider failure handling",
+      "no unsupported verdict persisted",
+      "simulated demo workflow",
+      "demo result labelling",
+      "demo does not persist as live verification"
+    ],
+    "description": "Checks actionable provider failure feedback and confirms that prepared demo results are clearly labelled and isolated from saved verification records.",
+    "steps": [
+      "Submit a factual claim with simulated Gemini and Groq provider failures active and inspect the error.",
+      "Open Explore Demo Mode and select a prepared example.",
+      "Inspect the result label and dashboard counts."
+    ],
+    "expected": "When both live providers fail, the claim is not saved and an actionable error is shown. Demo examples are labelled DEMO ONLY and do not change dashboard counts or audit history."
+  }
+]
